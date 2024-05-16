@@ -3,6 +3,7 @@ import 'package:quiz_app/components/auth/auth_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quiz_app/components/email_auth/email.dart';
 import 'package:quiz_app/components/email_auth/email_signup.dart';
+import 'package:quiz_app/utils/firebase_utils.dart';
 
 class Auth extends StatelessWidget {
   late AuthBloc authBloc;
@@ -16,13 +17,14 @@ class Auth extends StatelessWidget {
         listener: (context, state) {
           if (state is EmailNavigate) {
             Navigator.of(context)
-                .push(MaterialPageRoute(builder: (context) => const Email()));
+                .push(MaterialPageRoute(builder: (context) => Email()));
           } else if (state is EmailNavigateSignUp) {
-            Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => const EmailSignUp()));
+            Navigator.of(context)
+                .push(MaterialPageRoute(builder: (context) => EmailSignUp()));
           }
         },
         builder: (context, state) {
+          //final data = [];
           authBloc = BlocProvider.of<AuthBloc>(context);
           if (state is LoadAuth) {
             final isSignIn = state.isSigin;
@@ -91,8 +93,10 @@ class Auth extends StatelessWidget {
                       SizedBox(
                         width: double.infinity,
                         child: OutlinedButton(
-                          onPressed: () {
+                          onPressed: () async {
                             // authBloc.add(OnAuthClicked);
+                            final data = await FirebaseUtils.readData();
+                            print(data[0].answers);
                           },
                           style: OutlinedButton.styleFrom(
                             backgroundColor: Colors.white,

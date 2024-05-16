@@ -1,4 +1,8 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+
+import '../models/quiz_data.dart';
 
 class FirebaseUtils {
   static const collectionName = "quizdata";
@@ -29,6 +33,25 @@ class FirebaseUtils {
   }
 
   // read from collection
-  // List<QuizData>
-  // static Future<List<QuizData>> readData() async {}
+
+  static Future<List<QuizData>> readData() async {
+    List<QuizData> quiz = [];
+    await FirebaseFirestore.instance
+        .collection(collectionName)
+        .get()
+        .then((QuerySnapshot querySnapshot) {
+      querySnapshot.docs.forEach((doc) {
+        final data = QuizData.fromDocument(doc);
+        // print(doc["question"]);
+        /* final data = JsonEncoder(
+          (object) => doc.data(),
+        );
+        // doc.data();
+        print(data.toString()); */
+        // final quizData = QuizData.fromJson(data);
+        quiz.add(data);
+      });
+    });
+    return quiz;
+  }
 }
