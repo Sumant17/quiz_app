@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:quiz_app/components/quiz_page/finish.dart';
-import 'package:quiz_app/components/quiz_page/leaderboard.dart';
 
 class QuestionAnswerPage extends StatelessWidget {
   const QuestionAnswerPage({super.key});
@@ -18,6 +17,18 @@ class QuestionAnswerPage extends StatelessWidget {
           children: [
             const SizedBox(
               height: 30,
+            ),
+            const Padding(
+              padding: EdgeInsets.all(20.0),
+              child: LinearProgressIndicator(
+                // value: 05,
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.red),
+                backgroundColor: Colors.purpleAccent,
+                // color: Colors.orange,
+              ),
+            ),
+            const SizedBox(
+              height: 10,
             ),
             Stack(
               children: [

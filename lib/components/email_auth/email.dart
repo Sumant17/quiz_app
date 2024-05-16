@@ -44,6 +44,7 @@ class _EmailState extends State<Email> {
               height: 10,
             ),
             TextFormField(
+              obscureText: true,
               controller: passwordController,
               decoration: const InputDecoration(
                 hintText: 'Password',

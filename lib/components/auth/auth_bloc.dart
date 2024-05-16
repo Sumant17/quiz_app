@@ -12,7 +12,9 @@ class OnAuthMethodChanged extends AuthEvent {
   OnAuthMethodChanged({this.isSigin = false});
 }
 
-class OnEmailAuth extends AuthEvent {}
+class OnEmailAuthSignIn extends AuthEvent {}
+
+class OnEmailAuthSignUp extends AuthEvent {}
 
 //states
 abstract class AuthState {}
@@ -30,6 +32,8 @@ class AuthError extends AuthState {}
 
 class EmailNavigate extends AuthState {}
 
+class EmailNavigateSignUp extends AuthState {}
+
 //bloc
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   AuthBloc() : super(AuthLoading()) {
@@ -42,9 +46,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(LoadAuth(isSigin: method));
     });
 
-    on<OnEmailAuth>((event, emit) {
-      print('email sign in clicked');
+    on<OnEmailAuthSignIn>((event, emit) {
+      // print('email sign in clicked');
       emit(EmailNavigate());
+    });
+
+    on<OnEmailAuthSignUp>((event, emit) {
+      emit(EmailNavigateSignUp());
     });
   }
 }

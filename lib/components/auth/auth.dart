@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:quiz_app/components/auth/auth_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quiz_app/components/email_auth/email.dart';
+import 'package:quiz_app/components/email_auth/email_signup.dart';
 
 class Auth extends StatelessWidget {
   late AuthBloc authBloc;
@@ -16,6 +17,9 @@ class Auth extends StatelessWidget {
           if (state is EmailNavigate) {
             Navigator.of(context)
                 .push(MaterialPageRoute(builder: (context) => const Email()));
+          } else if (state is EmailNavigateSignUp) {
+            Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => const EmailSignUp()));
           }
         },
         builder: (context, state) {
@@ -34,7 +38,9 @@ class Auth extends StatelessWidget {
                         width: double.infinity,
                         child: OutlinedButton(
                           onPressed: () {
-                            authBloc.add(OnEmailAuth());
+                            isSignIn
+                                ? authBloc.add(OnEmailAuthSignIn())
+                                : authBloc.add(OnEmailAuthSignUp());
                           },
                           style: OutlinedButton.styleFrom(
                             backgroundColor: Colors.black,
