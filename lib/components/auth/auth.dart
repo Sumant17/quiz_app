@@ -4,6 +4,7 @@ import 'package:quiz_app/components/auth/auth_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quiz_app/components/email_auth/email.dart';
 import 'package:quiz_app/components/email_auth/email_signup.dart';
+import 'package:quiz_app/components/quiz_page/landing_page.dart';
 
 class Auth extends StatelessWidget {
   late AuthBloc authBloc;
@@ -136,7 +137,12 @@ class Auth extends StatelessWidget {
     );
   }
 
+  Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+    print("Handling a background message");
+  }
+
   void initialiseFirebaseMessaging(BuildContext context) {
+    FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
     // termited
     FirebaseMessaging.instance.getInitialMessage().then((value) {
       if (value != null) {
@@ -159,5 +165,7 @@ class Auth extends StatelessWidget {
     print(value.notification!.body);
 
     print(value.data);
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context) => const LandingPage()));
   }
 }
