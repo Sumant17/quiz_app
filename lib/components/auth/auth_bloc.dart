@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 //events
@@ -37,7 +38,9 @@ class EmailNavigateSignUp extends AuthState {}
 //bloc
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   AuthBloc() : super(AuthLoading()) {
-    on<OnAuth>((event, emit) {
+    on<OnAuth>((event, emit) async {
+      final token = await FirebaseMessaging.instance.getToken();
+      print(token);
       emit(LoadAuth(isSigin: true));
     });
 

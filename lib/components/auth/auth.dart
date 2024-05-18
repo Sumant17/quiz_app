@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:quiz_app/components/auth/auth_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,6 +15,9 @@ class Auth extends StatelessWidget {
       create: (context) => AuthBloc()..add(OnAuth()),
       child: BlocConsumer<AuthBloc, AuthState>(
         listener: (context, state) {
+          if (state is LoadAuth) {
+            initialiseFirebaseMessaging(context);
+          }
           if (state is EmailNavigate) {
             Navigator.of(context)
                 .push(MaterialPageRoute(builder: (context) => const Email()));
@@ -130,5 +134,30 @@ class Auth extends StatelessWidget {
         },
       ),
     );
+  }
+
+  void initialiseFirebaseMessaging(BuildContext context) {
+    // termited
+    FirebaseMessaging.instance.getInitialMessage().then((value) {
+      if (value != null) {
+        _onNotificationMessage(context, value);
+      }
+    });
+    //foreground
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      _onNotificationMessage(context, message);
+    });
+
+    //background
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      _onNotificationMessage(context, message);
+    });
+  }
+
+  void _onNotificationMessage(BuildContext context, RemoteMessage value) {
+    print(value.notification!.title);
+    print(value.notification!.body);
+
+    print(value.data);
   }
 }
