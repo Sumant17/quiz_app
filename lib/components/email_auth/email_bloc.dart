@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 //SIGN-UP
 //events
@@ -48,6 +49,8 @@ class EmailAuthBloc extends Bloc<EmailAuthEvent, EmailAuthState> {
         final credential = await FirebaseAuth.instance
             .createUserWithEmailAndPassword(
                 email: event.emailAddress.text, password: event.password.text);
+        final SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setBool('isUserLoggedIn', true);
 
         emit(EmailAuthSuccessSignUp());
       } on FirebaseAuthException catch (e) {
@@ -107,6 +110,8 @@ class SignInAuthBloc extends Bloc<SignInEvent, SignInState> {
         final credential = await FirebaseAuth.instance
             .signInWithEmailAndPassword(
                 email: event.email.text, password: event.passowrd.text);
+        final SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setBool('isUserLoggedIn', true);
 
         emit(LoadingSignInSuccess());
       } on FirebaseAuthException catch (e) {

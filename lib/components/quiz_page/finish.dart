@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:quiz_app/components/quiz_page/leaderboard.dart';
+import 'package:quiz_app/components/quiz_page/leaderboard/leaderboard.dart';
 
 class Finish extends StatelessWidget {
   const Finish({super.key});
@@ -73,8 +73,8 @@ class Finish extends StatelessWidget {
               width: double.infinity,
               child: OutlinedButton(
                 onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => const LeaderBoard()));
+                  Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => LeaderBoard()));
                 },
                 style: OutlinedButton.styleFrom(
                   backgroundColor: Color(0xffFF9051),

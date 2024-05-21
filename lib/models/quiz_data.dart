@@ -14,13 +14,15 @@ class QuizData {
 
   QuizData.fromDocument(DocumentSnapshot doc) {
     final map = doc.data() as Map<String, dynamic>;
-    this.answers = map["answers"];
+    final ans = map["answers"] as List;
+    ans.shuffle();
+    this.answers = ans;
     this.correctAnswer = map["correctAnswer"];
     this.question = map["question"];
   }
 
   factory QuizData.fromJson(json) {
-    print('hh $json');
+    // print('hh $json');
     return QuizData(
         question: json['question'],
         correctAnswer: json['correctAnswer'],

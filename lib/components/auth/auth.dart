@@ -1,8 +1,10 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:quiz_app/components/auth/auth_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quiz_app/components/email_auth/email.dart';
 import 'package:quiz_app/components/email_auth/email_signup.dart';
+import 'package:quiz_app/components/quiz_page/landing_page.dart';
 import 'package:quiz_app/utils/firebase_utils.dart';
 
 class Auth extends StatelessWidget {
@@ -15,6 +17,9 @@ class Auth extends StatelessWidget {
       create: (context) => AuthBloc()..add(OnAuth()),
       child: BlocConsumer<AuthBloc, AuthState>(
         listener: (context, state) {
+          if (state is LoadAuth) {
+            initializeFirebaseMessaging(context);
+          }
           if (state is EmailNavigate) {
             Navigator.of(context)
                 .push(MaterialPageRoute(builder: (context) => Email()));
@@ -22,9 +27,20 @@ class Auth extends StatelessWidget {
             Navigator.of(context)
                 .push(MaterialPageRoute(builder: (context) => EmailSignUp()));
           }
+
+          if (state is SkipAuth) {
+            Navigator.of(context)
+                .push(MaterialPageRoute(builder: (context) => LandingPage()));
+          }
         },
         builder: (context, state) {
           //final data = [];
+          // final data = [
+          //   {"id": 1, "name": "Alice Johnson", "point_score": 9.2},
+          //   {"id": 2, "name": "Bob Smith", "point_score": 9.5},
+          //   {"id": 3, "name": "Charlie Brown", "point_score": 9.0},
+          //   {"id": 4, "name": "David Wilson", "point_score": 8.9}
+          // ];
           authBloc = BlocProvider.of<AuthBloc>(context);
           if (state is LoadAuth) {
             final isSignIn = state.isSigin;
@@ -94,9 +110,10 @@ class Auth extends StatelessWidget {
                         width: double.infinity,
                         child: OutlinedButton(
                           onPressed: () async {
+                            // await FirebaseUtils.writeleaderboard(data);
                             // authBloc.add(OnAuthClicked);
-                            final data = await FirebaseUtils.readData();
-                            print(data[0].answers);
+                            // final data = await FirebaseUtils.readData();
+                            // print(data[0].answers);
                           },
                           style: OutlinedButton.styleFrom(
                             backgroundColor: Colors.white,
@@ -134,5 +151,38 @@ class Auth extends StatelessWidget {
         },
       ),
     );
+  }
+
+  Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+    print("Handling a background message");
+  }
+
+  void initializeFirebaseMessaging(BuildContext context) {
+    FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+    //terminated state
+    FirebaseMessaging.instance.getInitialMessage().then((value) {
+      if (value != null) {
+        _onNotificationMessage(context, value);
+      }
+    });
+
+    //foreground state
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      _onNotificationMessage(context, message);
+    });
+
+    //background state
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      _onNotificationMessage(context, message);
+    });
+  }
+
+  void _onNotificationMessage(BuildContext context, RemoteMessage value) {
+    print(value.notification!.title);
+    print(value.notification!.body);
+
+    print(value.data);
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context) => const LandingPage()));
   }
 }

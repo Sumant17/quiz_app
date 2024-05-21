@@ -1,11 +1,13 @@
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:quiz_app/models/leaderboard_model.dart';
 
 import '../models/quiz_data.dart';
 
 class FirebaseUtils {
   static const collectionName = "quizdata";
+  static const collectionleaderboard = "leaderboard";
 
   // write to collection
 
@@ -32,6 +34,22 @@ class FirebaseUtils {
     }
   }
 
+  static Future<void> writeleaderboard(List<Map<String, dynamic>> data) async {
+    try {
+      final leaderboard =
+          FirebaseFirestore.instance.collection(collectionleaderboard);
+
+      data.forEach((element) async {
+        await leaderboard
+            .add(element)
+            .then((v) => print("Data added"))
+            .catchError((error) => print("Failed to add user: $error"));
+      });
+    } catch (e) {
+      print(e);
+    }
+  }
+
   // read from collection
 
   static Future<List<QuizData>> readData() async {
@@ -53,5 +71,21 @@ class FirebaseUtils {
       });
     });
     return quiz;
+  }
+
+  static Future<List<LeaderBoardModel>> readLeaderBoard() async {
+    List<LeaderBoardModel> results = [];
+    await FirebaseFirestore.instance
+        .collection(collectionleaderboard)
+        .get()
+        .then((QuerySnapshot querySnapshot) {
+      querySnapshot.docs.forEach((doc) {
+        final data = LeaderBoardModel.fromDocument(doc);
+        print(data);
+
+        results.add(data);
+      });
+    });
+    return results;
   }
 }

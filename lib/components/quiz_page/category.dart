@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:quiz_app/components/quiz_page/q&a_page.dart';
+import 'package:quiz_app/components/quiz_page/q&a/q&a_page.dart';
 
 class Catogories extends StatelessWidget {
   const Catogories({super.key});
@@ -25,7 +25,7 @@ class Catogories extends StatelessWidget {
             GestureDetector(
               onTap: () {
                 Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => const QuestionAnswerPage()));
+                    builder: (context) => QuestionAnswerPage()));
                 // print('hello');
               },
               child: Container(
